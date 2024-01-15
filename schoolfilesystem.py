@@ -1,5 +1,5 @@
 import pandas
-
+import urllib.request
 
 class SchoolAssessmentSystem:
     
@@ -7,7 +7,7 @@ class SchoolAssessmentSystem:
     def __init__(self):
         self.data = pandas.DataFrame()
     
-        
+    
     def read_file(self, file_path):
         try:
             if file_path.endswith('.csv'):
@@ -23,15 +23,25 @@ class SchoolAssessmentSystem:
             print(f"Error reading file: {e}")
 
     
-    def transfer_data(self, old_file_path, new_file_path):
-        pass
-
-    # def fetch_web_data():
-
+    def transfer_data(self, new_file_path):
+        try:
+            self.transfer_data = pandas.read_csv(new_file_path)
+            self.data_merged = pandas.concat([self.transfer_data, self.data], ignore_index = True)
+            print(self.data_merged)
+            if new_file_path.endswith('.csv'):
+                self.data_merged.to_csv("data/merged_data.csv", index=False)
+            elif new_file_path.endswith('.xlsx'):
+                self.data_merged.to_excel("data/merged_data.xlsx", index=False) 
+        except Exception as e:
+            print(f"Error transferring data: {e}")
+    def fetch_web_data(self, url):
+        self.website_data = pandas.read_csv(url)
+        print(self.website_data)
     # def analyze_content():
 
     # def generate_summary():
 
 bruh = SchoolAssessmentSystem()
 bruh.read_file("data/class_1.csv")
-print(bruh.data)
+bruh.transfer_data("data/class_2.xlsx")
+bruh.fetch_web_data("https://media.githubusercontent.com/media/datablist/sample-csv-files/main/files/people/people-100.csv")
