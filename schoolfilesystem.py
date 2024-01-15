@@ -8,22 +8,23 @@ class SchoolAssessmentSystem:
         self.data = pandas.DataFrame()
     
         
-    def process_file(self, file_path):   
-        try:            
-            with open(file_path, 'r') as file:
-                self.data = file.read()
-            return self.data
-        except FileNotFoundError:
-            print(f"Error: File '{file_path}' not found.")
-            return None
-        
+    def read_file(self, file_path):
+        try:
+            if file_path.endswith('.csv'):
+                self.data = pandas.read_csv(file_path)
+            elif file_path.endswith('.xlsx'):
+                self.data = pandas.read_excel(file_path)
+            elif file_path.endswith('.txt'):
+                with open(file_path, 'r') as file:
+                    self.data = file.read()
+            else:
+                raise ValueError("Unsupported file format")
+        except Exception as e:
+            print(f"Error reading file: {e}")
+
     
     def transfer_data(self, old_file_path, new_file_path):
-        try:
-            with open(new_file_path, 'a') as file:
-                file.write(self.process_file(old_file_path))
-        except UnicodeDecodeError:
-            print("Error: Could not read file")
+        pass
 
     # def fetch_web_data():
 
@@ -31,8 +32,6 @@ class SchoolAssessmentSystem:
 
     # def generate_summary():
 
-
-# Analyze content & display result area
 bruh = SchoolAssessmentSystem()
-bruh.process_file("lol.xlsx")
-bruh.transfer_data(old_file_path="lol.xlsx",new_file_path="new.xlsx")
+bruh.read_file("data/class_1.csv")
+print(bruh.data)
