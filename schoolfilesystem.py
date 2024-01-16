@@ -72,8 +72,7 @@ class SchoolAssessmentSystem:
             
             
     def generate_summary(self, class_num):
-        print(f"""
-    Summary Report of {class_num}:
+        print(f"""    Summary Report of {class_num}:
         Class Average: {self.class_avg}
         Last Semester Average: {self.last_sem_avg}
         {self.statement}
@@ -82,20 +81,5 @@ class SchoolAssessmentSystem:
         1. {self.top_scorer_dict[0]['Name']} with the Total score of {self.top_scorer_dict[0]['Total_score']}
         2. {self.top_scorer_dict[1]['Name']} with the Total score of {self.top_scorer_dict[1]['Total_score']}
         3. {self.top_scorer_dict[2]['Name']} with the Total score of {self.top_scorer_dict[2]['Total_score']}
-                                                                                                                
+        {"-"*50}                                                                                                                
 """)
-        
-
-class_1 = SchoolAssessmentSystem()
-class_1.analyze_content("data/class_1.csv", "https://github.com/SokatiKEO2/CSB-AUPPStudentLabs/blob/main/Data/class_1_last_sem.csv?raw=true")
-class_1.generate_summary("Class 1")
-
-class_2 = SchoolAssessmentSystem()
-class_2.analyze_content("data/class_2.csv", "https://github.com/SokatiKEO2/CSB-AUPPStudentLabs/blob/main/Data/class_2_last_sem.csv?raw=true")
-class_2.generate_summary("Class 2")
-
-all_class = SchoolAssessmentSystem()
-all_class.read_file("data/class_1.csv")
-all_class.transfer_data("data/class_2.csv")
-all_class.analyze_content("data/merged_class.csv", "https://github.com/SokatiKEO2/CSB-AUPPStudentLabs/blob/main/Data/merged_class_last_sem.csv?raw=true")
-all_class.generate_summary("Merged Class")
