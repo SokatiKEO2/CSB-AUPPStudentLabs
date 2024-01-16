@@ -6,7 +6,6 @@ class SchoolAssessmentSystem:
     
     def __init__(self):
         self.data = None
-        self.url = "https://github.com/SokatiKEO2/CSB-AUPPStudentLabs/blob/main/Data/old_semester.csv?raw=true"
     
     
     def read_file(self, file_path):
@@ -39,10 +38,9 @@ class SchoolAssessmentSystem:
             print(f"Error transferring data: {e}")
         
             
-    def fetch_web_data(self):
+    def fetch_web_data(self, url):
         try:
-            self.website_data = pandas.read_csv(self.url)
-            return self.website_data
+            return pandas.read_csv(url)
         except FileNotFoundError:
             print(f"Error: File not found at {self.url}. Please check the file path.")
         except pandas.errors.EmptyDataError:
@@ -51,14 +49,20 @@ class SchoolAssessmentSystem:
             print(f"An unexpected error occurred: {e}")
             
             
-    def analyze_content(self, class_num):
+    def analyze_content(self, class_num, last_sem_url):
         try:
             class_data = self.read_file(class_num)            
             class_data["Total_score"] = class_data[['Math_Score', 'English_Score', 'Science_Score', 'Social_Score']].sum(axis=1)            
             class_avg = class_data["Total_score"].mean()/4
             top_scorer_class = class_data.nlargest(3, 'Total_score')
+            top_scorer_dict = top_scorer_class[["Name", "Total_score"]].to_dict(orient='records')
             
-            return class_avg, top_scorer_class[['StudentID', 'Name', 'Total_score']]
+            
+            last_sem_data = self.fetch_web_data()
+            last_sem_avg = (last_sem_data[['Math_Score', 'English_Score', 'Science_Score', 'Social_Score']].sum(axis=1)).mean()/4
+            
+            
+            return class_avg, top_scorer_dict, last_sem_avg
             
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
@@ -70,6 +74,6 @@ bruh.transfer_data("data/class_2.csv")
 class_1 = bruh.analyze_content("data/class_1.csv")
 class_2 = bruh.analyze_content("data/class_2.csv")
 
-print(class_1[1])
-print(class_2[1])
-bruh.fetch_web_data()
+print(class_1)
+print(class_2)
+print(class_2[1][1]["Name"])
