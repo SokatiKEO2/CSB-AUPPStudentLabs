@@ -34,6 +34,8 @@ class SchoolAssessmentSystem:
                 self.data_merged.to_excel("data/merged_data.xlsx", index=False) 
         except Exception as e:
             print(f"Error transferring data: {e}")
+        
+            
     def fetch_web_data(self, url):
         self.website_data = pandas.read_csv(url)
         print(self.website_data)
@@ -43,5 +45,5 @@ class SchoolAssessmentSystem:
 
 bruh = SchoolAssessmentSystem()
 bruh.read_file("data/class_1.csv")
-bruh.transfer_data("data/class_2.xlsx")
+bruh.transfer_data("data/class_2.csv")
 bruh.fetch_web_data("https://media.githubusercontent.com/media/datablist/sample-csv-files/main/files/people/people-100.csv")
