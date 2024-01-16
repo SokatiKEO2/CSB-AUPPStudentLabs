@@ -33,7 +33,8 @@ class SchoolAssessmentSystem:
                 self.data_merged.to_csv("data/merged_class.csv", index=False)
             elif new_file_path.endswith('.xlsx'):
                 self.data_merged.to_excel("data/merged_class.xlsx", index=False) 
-                
+            
+            self.data = pandas.read_csv("data/merged_class.xlsx")
         except Exception as e:
             print(f"Error transferring data: {e}")
         
@@ -51,29 +52,48 @@ class SchoolAssessmentSystem:
             
     def analyze_content(self, class_num, last_sem_url):
         try:
-            class_data = self.read_file(class_num)            
-            class_data["Total_score"] = class_data[['Math_Score', 'English_Score', 'Science_Score', 'Social_Score']].sum(axis=1)            
-            class_avg = class_data["Total_score"].mean()/4
-            top_scorer_class = class_data.nlargest(3, 'Total_score')
-            top_scorer_dict = top_scorer_class[["Name", "Total_score"]].to_dict(orient='records')
+            self.class_data = self.read_file(class_num)            
+            self.class_data["Total_score"] = self.class_data[['Math_Score', 'English_Score', 'Science_Score', 'Social_Score']].sum(axis=1)            
+            self.class_avg = self.class_data["Total_score"].mean()/4
+            self.top_scorer_class = self.class_data.nlargest(3, 'Total_score')
+            self.top_scorer_dict = self.top_scorer_class[["Name", "Total_score"]].to_dict(orient='records')
             
             
-            last_sem_data = self.fetch_web_data()
-            last_sem_avg = (last_sem_data[['Math_Score', 'English_Score', 'Science_Score', 'Social_Score']].sum(axis=1)).mean()/4
+            self.last_sem_data = self.fetch_web_data(last_sem_url)
+            self.last_sem_avg = (self.last_sem_data[['Math_Score', 'English_Score', 'Science_Score', 'Social_Score']].sum(axis=1)).mean()/4
             
-            
-            return class_avg, top_scorer_dict, last_sem_avg
+            if self.class_avg > self.last_sem_avg:
+                self.statement = f"Average Score has improved by {round(self.class_avg - self.last_sem_avg, 4)}"
+            elif self.class_avg < self.last_sem_avg:
+                self.statement = f"Average Score has dropped by {abs(round(self.class_avg - self.last_sem_avg, 4))}"
             
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
-    # def generate_summary():
+            
+            
+    def generate_summary(self):
+        print(f"""Summary Report:
+    Class Average: {self.class_avg}
+    Last Semester Average: {self.last_sem_avg}
+    {self.statement}
+    
+Top Students:
+    1. {self.top_scorer_dict[0]['Name']} with the Total score of {self.top_scorer_dict[0]['Total_score']}
+    2. {self.top_scorer_dict[1]['Name']} with the Total score of {self.top_scorer_dict[1]['Total_score']}
+    3. {self.top_scorer_dict[2]['Name']} with the Total score of {self.top_scorer_dict[2]['Total_score']}
+""")
+        
 
-bruh = SchoolAssessmentSystem()
-bruh.read_file("data/class_1.csv")
-bruh.transfer_data("data/class_2.csv")
-class_1 = bruh.analyze_content("data/class_1.csv")
-class_2 = bruh.analyze_content("data/class_2.csv")
+class_1 = SchoolAssessmentSystem()
+class_1.analyze_content("data/class_1.csv", "https://github.com/SokatiKEO2/CSB-AUPPStudentLabs/blob/main/Data/class_1_last_sem.csv?raw=true")
+class_1.generate_summary()
 
-print(class_1)
-print(class_2)
-print(class_2[1][1]["Name"])
+class_2 = SchoolAssessmentSystem()
+class_2.analyze_content("data/class_2.csv", "https://github.com/SokatiKEO2/CSB-AUPPStudentLabs/blob/main/Data/class_2_last_sem.csv?raw=true")
+class_2.generate_summary()
+
+all_class = SchoolAssessmentSystem()
+all_class.read_file("data/class_1.csv")
+all_class.transfer_data("data/class_2.csv")
+all_class.analyze_content("data/merged_class.csv", "https://github.com/SokatiKEO2/CSB-AUPPStudentLabs/blob/main/Data/merged_class_last_sem.csv?raw=true")
+all_class.generate_summary()
