@@ -28,12 +28,12 @@ class SchoolAssessmentSystem:
             self.data_merged = pandas.concat([self.transfer_data, self.data], ignore_index = True)
             
             if new_file_path.endswith('.csv'):
-                self.data_merged.to_csv("data/merged_class.csv", index=False)
-                self.data = pandas.read_csv("data/merged_class.csv")
+                self.data_merged.to_csv("School_File_System/data/merged_class.csv", index=False)
+                self.data = pandas.read_csv("School_File_System/data/merged_class.csv")
                 
             elif new_file_path.endswith('.xlsx'):
-                self.data_merged.to_excel("data/merged_class.xlsx", index=False) 
-                self.data = pandas.read_csv("data/merged_class.xlsx")
+                self.data_merged.to_excel("School_File_System/data/merged_class.xlsx", index=False) 
+                self.data = pandas.read_csv("School_File_System/data/merged_class.xlsx")
                 
         except Exception as e:
             print(f"Error transferring data: {e}")
