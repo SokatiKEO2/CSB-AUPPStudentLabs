@@ -44,6 +44,8 @@ class MusicLibrary:
 
 
 class Playlist:
+    #Use list in self.songs to maintain the song data and for indexing in display_playlist()
+    #Use set in self.song_set to stores the unique titles of songs 
     def __init__(self, name):
         self.name = name
         self.songs = []
